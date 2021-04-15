@@ -1,0 +1,5 @@
+.idea
+static/*
+!.gitkeep
+!date-format.js
+!moment-with-locales.js

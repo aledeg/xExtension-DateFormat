@@ -1,12 +1,12 @@
 <?php
 
 class DateFormatExtension extends Minz_Extension {
-    const DEFAULT_RELATIVE_DATE = false;
-    const DEFAULT_ADJUSTED_DATE = false;
-    const DEFAULT_HOUR12_DATE = false;
-    const DEFAULT_CUSTOM_FORMAT = null;
+    private const DEFAULT_RELATIVE_DATE = false;
+    private const DEFAULT_ADJUSTED_DATE = false;
+    private const DEFAULT_HOUR12_DATE = false;
+    private const DEFAULT_CUSTOM_FORMAT = null;
 
-    public function init() {
+    public function init(): void {
         $this->registerTranslates();
 
         Minz_View::appendScript($this->getFileUrl('moment-with-locales.js', 'js'));
@@ -15,7 +15,7 @@ class DateFormatExtension extends Minz_Extension {
         $this->registerHook('js_vars', [$this, 'addVariables']);
     }
 
-    public function addVariables($vars) {
+    public function addVariables($vars): array {
         $vars[$this->getName()]['configuration'] = [
             'relativeDates' => $this->getRelativeDates(),
             'adjustedDates' => $this->getAdjustedDates(),
@@ -26,33 +26,33 @@ class DateFormatExtension extends Minz_Extension {
         return $vars;
     }
 
-    public function handleConfigureAction() {
+    public function handleConfigureAction(): void {
         $this->registerTranslates();
 
         if (Minz_Request::isPost()) {
             $configuration = [
-                'relativeDates' => (bool) Minz_Request::param('relative-dates'),
-                'adjustedDates' => (bool) Minz_Request::param('adjusted-dates'),
-                'hour12Dates' => (bool) Minz_Request::param('hour12-dates'),
-                'customFormat' => Minz_Request::param('custom-format'),
+                'relativeDates' => Minz_Request::paramBoolean('relative-dates'),
+                'adjustedDates' => Minz_Request::paramBoolean('adjusted-dates'),
+                'hour12Dates' => Minz_Request::paramBoolean('hour12-dates'),
+                'customFormat' => Minz_Request::paramStringNull('custom-format'),
             ];
             $this->setUserConfiguration($configuration);
         }
     }
 
-    public function getRelativeDates() {
+    public function getRelativeDates(): bool {
         return $this->getUserConfigurationValue('relativeDates', static::DEFAULT_RELATIVE_DATE);
     }
 
-    public function getAdjustedDates() {
+    public function getAdjustedDates(): bool {
         return $this->getUserConfigurationValue('adjustedDates', static::DEFAULT_ADJUSTED_DATE);
     }
 
-    public function getHour12Dates() {
+    public function getHour12Dates(): bool {
         return $this->getUserConfigurationValue('hour12Dates', static::DEFAULT_HOUR12_DATE);
     }
 
-    public function getCustomFormat() {
+    public function getCustomFormat(): ?string {
         return $this->getUserConfigurationValue('customFormat', static::DEFAULT_CUSTOM_FORMAT);
     }
 }

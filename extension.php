@@ -12,7 +12,11 @@ class DateFormatExtension extends Minz_Extension {
         Minz_View::appendScript($this->getFileUrl('moment-with-locales.js', 'js'));
         Minz_View::appendScript($this->getFileUrl('date-format.js', 'js'));
 
-        $this->registerHook('js_vars', [$this, 'addVariables']);
+        if (version_compare(FRESHRSS_VERSION, 1.28) >= 0) {
+            $this->registerHook(Minz_HookType::JsVars, [$this, 'addVariables']);
+        } else {
+            $this->registerHook('js_vars', [$this, 'addVariables']);
+        }
     }
 
     public function addVariables($vars): array {
